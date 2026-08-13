@@ -20,8 +20,8 @@ The project includes relational data for members, stray animals, adoption record
 ## Project Structure
 ```text
 java code/    # Java Swing application source
- table_data/  # Sample/exported table data
-資料庫關聯綱目的描述檔.sql  # Database schema
+table_data/   # Sample/exported table data
+資料庫關聯綱目的描述檔.sql  # Database schema/data dump
 專題報告書.docx            # Project report
 ```
 
@@ -36,12 +36,18 @@ DB_PASSWORD=your_password
 
 `DB_URL` and `DB_USER` have local-development defaults. `DB_PASSWORD` must be supplied through the environment.
 
+> `.env.example` is only a safe configuration reference. This plain Java project does not automatically load `.env` files.
+
 ## How to Run
-1. Install Java and MySQL.
-2. Create the `dbproject` database using `資料庫關聯綱目的描述檔.sql`.
-3. Add the MySQL Connector/J JDBC driver to the project classpath.
-4. Configure `DB_URL`, `DB_USER`, and `DB_PASSWORD`.
-5. Compile the Java files in `java code/` and run `PetAdoptionSystem.java`.
+1. Install Java, MySQL, and MySQL Connector/J.
+2. Create the database first:
+   ```sql
+   CREATE DATABASE dbproject CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+   ```
+3. Select `dbproject` and import `資料庫關聯綱目的描述檔.sql`.
+4. Add the MySQL Connector/J JDBC driver to the project classpath.
+5. Configure `DB_URL`, `DB_USER`, and `DB_PASSWORD` in your environment.
+6. Compile the Java files in `java code/` and run `PetAdoptionSystem.java`.
 
 ## My Contribution
 I served as a primary developer and participated in system feature planning, GUI design, database design, core Java implementation, SQL development, system integration, testing, debugging, and project presentation.
