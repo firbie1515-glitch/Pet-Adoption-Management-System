@@ -1,30 +1,38 @@
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
-// 定義一個 DBConnection 類別，專門用來取得資料庫連線
+/**
+ * Provides database connections without storing credentials in source code.
+ *
+ * Configure the connection with environment variables:
+ * DB_URL, DB_USER, DB_PASSWORD
+ */
 public class DBConnection {
-    // 定義資料庫連線的 URL，這裡連到本機的 MySQL，使用 dbproject 這個資料庫
-    private static String url = "jdbc:mysql://127.0.0.1:3306/dbproject"; 
-    // 資料庫登入帳號
-    private static String user = "root";
-    // 資料庫登入密碼
-    private static String password = "firbie15";
+    private static final String URL = getEnvOrDefault(
+            "DB_URL", "jdbc:mysql://127.0.0.1:3306/dbproject");
+    private static final String USER = getEnvOrDefault("DB_USER", "root");
+    private static final String PASSWORD = System.getenv("DB_PASSWORD");
 
-    // Constructor : 空下來以保持操作彈性
-    public DBConnection(){}
+    public DBConnection() {}
 
-    // 回傳一個 Connection 物件，連接資料庫，連線或操作可能失敗，會拋出 SQLException
+    private static String getEnvOrDefault(String name, String defaultValue) {
+        String value = System.getenv(name);
+        return value == null || value.isBlank() ? defaultValue : value;
+    }
+
     public static Connection getConnection() throws SQLException {
-         try {
-            // 註冊一個 mysql 的 JDBC Driver 到 java.sql.DriverManager 中
+        try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
-            // 如果找不到 JDBC Driver 的話，會跳出 Exception 通知使用者
-            System.err.println("MySQL JDBC Driver not found.");
-            e.printStackTrace();
             throw new SQLException("MySQL JDBC Driver not found", e);
-        }       
-         
-        // 利用 DriverManager 的 getConnection 方法，傳入 URL、使用者名稱與密碼，取得資料庫連線                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-        return DriverManager.getConnection(url, user, password);
+        }
+
+        if (PASSWORD == null || PASSWORD.isBlank()) {
+            throw new SQLException(
+                    "Database password is not configured. Set the DB_PASSWORD environment variable before starting the application.");
+        }
+
+        return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 }
